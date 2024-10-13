@@ -38,7 +38,7 @@ resource "yandex_compute_instance" "vm" {
   }
 
   metadata = {
-    user-data = "${file("./meta.txt")}"
+    ssh-keys = "tenda:AAAAB3NzaC1yc2EAAAADAQABAAABgQCz4K1dgy26iIm/HDIcHi3th6mr0uYcRztQuAqhmpRjGEaHz1TJBXYawTFgXKv3td/Iq2BflWIVZJUadj5VTQUHb5oy0qKsGWShp7wycs+dUHroXcZmS4ysrGnXcZgrveLwU1YFgBNSxDRNm7kHBeOfoqh06a/zsUNqLPEEHsF+tfEuF4T1gOFFcDDDYsTJM/91Cw6zRWHYYeUFsPWHZIRjv1b0EM2jopUOLrI6xgCSptFkJWFsGqXogWJZgM/5zNjlerddl3YoahauaSGiB0ajCGS/3RycvVF+mxlY/jCTnvyx02UxhCYON4NpTLHAPWYjI4nsR0w/08BsS+1NU+ma1C+dmyl8qNG9sibw6wmoC5aMyXWIQa2/MrVGP/2/9gn1yERWtcWsUyfdTWKy2N6VqRGb+3Ub3fyEl0SFDcXszl5aNBN5co58S16SrsDojx5Vhdt7e88Y+AJseFNsIg/gguSabwN8a8/umRY6XsgTzqqxTfmFDe6jRXkMshEaO10= root@killakazzak.fvds.ru"
   }
 }
 
