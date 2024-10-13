@@ -1,0 +1,56 @@
+---
+- name: Install Docker and configure Docker Swarm
+  hosts: all
+  become: yes
+  tasks:
+    - name: Update apt repository
+      apt:
+        update_cache: yes
+
+    - name: Install required packages
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+        state: present
+
+    - name: Add Docker GPG key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker repository
+      apt_repository:
+        repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename }} stable"
+        state: present
+
+    - name: Update apt repository again
+      apt:
+        update_cache: yes
+
+    - name: Install Docker
+      apt:
+        name: docker-ce
+        state: present
+
+    - name: Start Docker service
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Initialize Docker Swarm on vm-1
+      command: docker swarm init --advertise-addr {{ ansible_default_ipv4.address }}
+      when: inventory_hostname == "vm-1"
+
+    - name: Get join token for worker nodes
+      command: docker swarm join-token worker -q
+      register: join_token
+      when: inventory_hostname == "vm-1"
+
+    - name: Join Docker Swarm as worker
+      command: docker swarm join --token {{ join_token.stdout }} vm-1:2377
+      when: inventory_hostname != "vm-1"
+
