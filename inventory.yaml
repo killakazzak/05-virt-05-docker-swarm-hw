@@ -1,0 +1,25 @@
+all:
+  children:
+    swarm_master:
+      hosts:
+        vm-1:
+          ansible_host: 51.250.13.171
+          ansible_user: tenda
+          ansible_ssh_private_key_file: /home/tenda/.ssh/id_ed25519
+          ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+          ansible_python_interpreter: /usr/bin/python3.12
+    swarm_workers:
+      hosts:
+        vm-2:
+          ansible_host: 51.250.13.177
+          ansible_user: tenda
+          ansible_ssh_private_key_file: /home/tenda/.ssh/id_ed25519
+          ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+          ansible_python_interpreter: /usr/bin/python3.12
+        vm-3:
+          ansible_host: 51.250.14.14
+          ansible_user: tenda
+          ansible_ssh_private_key_file: /home/tenda/.ssh/id_ed25519
+          ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+          ansible_python_interpreter: /usr/bin/python3.12
+
