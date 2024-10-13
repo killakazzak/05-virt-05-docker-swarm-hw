@@ -50,10 +50,10 @@
       register: join_token
       when: inventory_hostname == "vm-1"
 
-    - name: Check if join token is available
-      fail:
-        msg: "Join token is not available. Ensure that the swarm is initialized on vm-1."
-      when: inventory_hostname != "vm-1" and (join_token is not defined or join_token.stdout is not defined)
+    - name: Set join token fact for all nodes
+      set_fact:
+        join_token: "{{ join_token.stdout }}"
+      when: inventory_hostname != "vm-1"
 
     - name: Join Docker Swarm as worker
       command: docker swarm join --token {{ join_token.stdout }} vm-1:2377
