@@ -37,19 +37,10 @@ resource "yandex_compute_instance" "vm" {
   }
 
   metadata = {
-    user-data = <<-EOF
-                #cloud-config
-                package_update: true
-                packages:
-                  - docker.io
-                runcmd:
-                  - systemctl start docker
-                  - systemctl enable docker
-                EOF
+    user-data = "${file("./meta.txt")}"
   }
 }
 
 output "instance_ips" {
   value = [for instance in yandex_compute_instance.vm : instance.network_interface[0].nat_ip_address]
 }
-
