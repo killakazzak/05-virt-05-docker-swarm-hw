@@ -32,7 +32,7 @@ resource "yandex_compute_instance" "vm" {
   }
 
   network_interface {
-    subnet_id = "enprs6itp0ni2i26hqa6"
+    subnet_id = "e9bang8tpj4mbo92gvr6"
     nat       = true
   }
 
@@ -50,6 +50,6 @@ resource "yandex_compute_instance" "vm" {
 }
 
 output "instance_ips" {
-  value = yandex_compute_instance.vm[*].network_interface[0].ipv4_address
+  value = [for instance in yandex_compute_instance.vm : instance.network_interface[0].nat_ip_address]
 }
 
