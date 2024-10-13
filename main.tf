@@ -9,9 +9,9 @@ terraform {
 
 provider "yandex" {
   service_account_key_file = "/root/yandex-cloud/key.json"
-  cloud_id           = "b1gp6qjp3sreksmq9ju1"
-  folder_id          = "b1g3hhpc4sj7fmtmdccu"
-  zone               = "ru-central1-a" # или другая зона
+  cloud_id                 = "b1gp6qjp3sreksmq9ju1"
+  folder_id                = "b1g3hhpc4sj7fmtmdccu"
+  zone                     = "ru-central1-a" # или другая зона
 }
 
 resource "yandex_compute_instance" "vm" {
