@@ -23,7 +23,7 @@ resource "yandex_compute_instance" "vm" {
   resources {
     core_fraction = 5
     cores  = 2
-    memory = 2
+    memory = 1
   }
   
   scheduling_policy {
@@ -42,9 +42,9 @@ resource "yandex_compute_instance" "vm" {
   }
 
   metadata = {
-    user-data = "${file("./meta.txt")}"
+    "ssh-keys" = file("./ssh-keys.txt")
+    "user-data" = file("./meta.txt")
   }
-
 }
 
 output "instance_ips" {
