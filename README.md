@@ -27,6 +27,14 @@
 ```
 docker node ls
 ```
+
+
+
+```bash
+ ansible-playbook -i inventory.yaml  docker_swarm_setup.yml
+```
+
+
 ## Задача 2 (*) (необязательное задание *).
 1.  Задеплойте ваш python-fork из предыдущего ДЗ(05-virt-04-docker-in-practice) в получившийся кластер.
 2. Удалите стенд.
