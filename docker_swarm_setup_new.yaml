@@ -41,21 +41,31 @@
         state: started
         enabled: yes
 
+    - name: Check if Docker Swarm is already initialized
+      command: docker info
+      register: docker_info
+      ignore_errors: yes
+
     - name: Initialize Docker Swarm on vm-1
       command: docker swarm init --advertise-addr {{ ansible_default_ipv4.address }}
-      when: inventory_hostname == "vm-1"
+      when: inventory_hostname == "vm-1" and (docker_info.rc != 0 or 'Swarm: active' not in docker_info.stdout)
 
     - name: Get join token for worker nodes
       command: docker swarm join-token worker -q
       register: join_token
       when: inventory_hostname == "vm-1"
 
+    - name: Set join token fact
+      set_fact:
+        swarm_join_token: "{{ join_token.stdout }}"
+      when: inventory_hostname == "vm-1"
+    
     - name: Check if join token is available
       fail:
         msg: "Join token is not available. Ensure that the swarm is initialized on vm-1."
       when: inventory_hostname != "vm-1" and (join_token is not defined or join_token.stdout is not defined)
 
     - name: Join Docker Swarm as worker
-      command: docker swarm join --token {{ join_token.stdout }} vm-1:2377
+      command: docker swarm join --token {{ swarm_join_token }} vm-1:2377
       when: inventory_hostname != "vm-1"
 
