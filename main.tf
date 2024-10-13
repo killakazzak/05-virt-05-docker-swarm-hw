@@ -21,6 +21,7 @@ resource "yandex_compute_instance" "vm" {
   zone = "ru-central1-a"
 
   resources {
+    core_fraction = 20
     cores  = 2
     memory = 2
   }
