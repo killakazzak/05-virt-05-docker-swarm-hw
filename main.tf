@@ -1,47 +1,55 @@
+terraform {
+  required_providers {
+    yandex = {
+      source = "yandex-cloud/yandex"
+    }
+  }
+  required_version = ">= 0.130"
+}
+
 provider "yandex" {
-  service_account_key_file = "path/to/your/service-account-key.json"
-  cloud_id                 = "your-cloud-id"
-  folder_id                = "your-folder-id"
-  zone                     = "ru-central1-a" # или другая зона
+  service_account_key_file = "/root/yandex-cloud/key.json"
+  cloud_id           = "b1gp6qjp3sreksmq9ju1"
+  folder_id          = "b1g3hhpc4sj7fmtmdccu"
+  zone               = "ru-central1-a" # или другая зона
 }
 
 resource "yandex_compute_instance" "vm" {
-  count        = 3
-  name         = "docker-vm-${count.index + 1}"
-  zone         = "ru-central1-a"
-  platform_id  = "standard-v1"
+  count = 3
+
+  name = "vm-${count.index + 1}"
+  zone = "ru-central1-a"
+
   resources {
     cores  = 2
     memory = 2
   }
+
   boot_disk {
     initialize_params {
-      image_id = "fd8g0g0g0g0g0g0g0g0g" # ID образа, например, Ubuntu
+      image_id = "fd8tvc3529h2cpjvpkr5" # ID образа, например, Ubuntu
     }
   }
+
   network_interface {
-    subnet_id = yandex_vpc_subnet.main.id
+    subnet_id = "enprs6itp0ni2i26hqa6"
     nat       = true
   }
+
   metadata = {
-    user_data = <<-EOF
-                #!/bin/bash
-                apt-get update
-                apt-get install -y docker.io
-                systemctl start docker
-                systemctl enable docker
+    user-data = <<-EOF
+                #cloud-config
+                package_update: true
+                packages:
+                  - docker.io
+                runcmd:
+                  - systemctl start docker
+                  - systemctl enable docker
                 EOF
   }
 }
 
-resource "yandex_vpc_network" "main" {
-  name = "my-network"
-}
-
-resource "yandex_vpc_subnet" "main" {
-  name           = "my-subnet"
-  zone           = "ru-central1-a"
-  network_id     = yandex_vpc_network.main.id
-  v4_cidr_blocks = ["192.168.0.0/24"]
+output "instance_ips" {
+  value = yandex_compute_instance.vm[*].network_interface[0].ipv4_address
 }
 
