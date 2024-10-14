@@ -47,15 +47,52 @@
 
     - name: Get join token for worker nodes
       command: docker swarm join-token worker -q
-      register: join_token
+      register: get_join_token
       when: inventory_hostname == "vm-1"
 
     - name: Set join token fact for all nodes
       set_fact:
-        join_token: "{{ join_token }}"
+        join_token: "{{ get_join_token.stdout }}"
       when: inventory_hostname == "vm-1"
 
+    - name: display result
+      debug:
+        var: join_token
+
+    - name: Write join token to file
+      copy:
+        content: "{{ join_token }}"
+        dest: /tmp/join_token.txt
+      when: inventory_hostname == "vm-1"
+      delegate_to: localhost
+
+
+        # - name: Read join token from file
+        #slurp:
+        #src: /tmp/join_token.txt
+        #register: slurped_token
+        #when: inventory_hostname != "vm-1"
+
+    - name: display result
+      debug:
+        var: item
+      with_file:
+        - /tmp/join_token.txt
+
+
+
+     #- name: Decode and set join token fact for worker nodes
+     # set_fact:
+     #   join_token: "{{ item | b64decode }}"
+     # when: inventory_hostname != "vm-1"
+     # with_file:
+     #   - /tmp/join_token.txt
+
+
+
     - name: Join Docker Swarm as worker
-      command: docker swarm join --token {{ join_token }} vm-1:2377
+      command: docker swarm join --token {{ item }} {{ hostvars['vm-1'].ansible_host }}:2377
       when: inventory_hostname != "vm-1"
+      with_file:
+        - /tmp/join_token.txt
 
