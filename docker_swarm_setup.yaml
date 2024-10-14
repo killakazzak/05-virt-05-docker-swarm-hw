@@ -59,7 +59,7 @@
       debug:
         var: join_token
 
-    - name: Write join token to file
+    - name: Write join token to file!
       copy:
         content: "{{ join_token }}"
         dest: /tmp/join_token.txt
