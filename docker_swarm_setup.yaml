@@ -66,29 +66,11 @@
       when: inventory_hostname == "vm-1"
       delegate_to: localhost
 
-
-        # - name: Read join token from file
-        #slurp:
-        #src: /tmp/join_token.txt
-        #register: slurped_token
-        #when: inventory_hostname != "vm-1"
-
     - name: display result
       debug:
         var: item
       with_file:
         - /tmp/join_token.txt
-
-
-
-     #- name: Decode and set join token fact for worker nodes
-     # set_fact:
-     #   join_token: "{{ item | b64decode }}"
-     # when: inventory_hostname != "vm-1"
-     # with_file:
-     #   - /tmp/join_token.txt
-
-
 
     - name: Join Docker Swarm as worker
       command: docker swarm join --token {{ item }} {{ hostvars['vm-1'].ansible_host }}:2377
