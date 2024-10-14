@@ -89,11 +89,6 @@ terraform apply
 ```bash
  ansible-playbook -i inventory.yaml  docker_swarm_setup.yml
 ```
-Не удалось подключить worker-ноды с помощью ansible. Возникла ошибка
-
-![image](https://github.com/user-attachments/assets/af3d06e8-861e-41ca-95d3-0a9306732c73)
-
-Поэтому подключал ноды в ручном режиме...
 
 ```bash
 docker node ls
