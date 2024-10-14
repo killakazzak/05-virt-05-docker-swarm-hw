@@ -1,13 +1,13 @@
 ---
-- name: Install Docker and configure Docker Swarm
+- name: Установить Docker и настроить Docker Swarm
   hosts: all
   become: yes
   tasks:
-    - name: Update apt repository
+    - name: Обновить репозиторий apt
       apt:
         update_cache: yes
 
-    - name: Install required packages
+    - name: Установить необходимые пакеты
       apt:
         name:
           - apt-transport-https
@@ -16,56 +16,46 @@
           - software-properties-common
         state: present
 
-    - name: Add Docker GPG key
+    - name: Добавить GPG-ключ Docker
       apt_key:
         url: https://download.docker.com/linux/ubuntu/gpg
         state: present
 
-    - name: Add Docker repository
+    - name: Добавить репозиторий Docker
       apt_repository:
         repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename }} stable"
         state: present
 
-    - name: Update apt repository again
+    - name: Снова обновить репозиторий apt
       apt:
         update_cache: yes
 
-    - name: Install Docker
+    - name: Установить Docker
       apt:
         name: docker-ce
         state: present
 
-    - name: Start Docker service
+    - name: Запустить службу Docker
       systemd:
         name: docker
         state: started
         enabled: yes
 
-    - name: Check if Docker Swarm is already initialized
-      command: docker info
-      register: docker_info
-      ignore_errors: yes
-
-    - name: Initialize Docker Swarm on vm-1
+    - name: Инициализировать Docker Swarm на vm-1
       command: docker swarm init --advertise-addr {{ ansible_default_ipv4.address }}
-      when: inventory_hostname == "vm-1" and (docker_info.rc != 0 or 'Swarm: active' not in docker_info.stdout)
+      when: inventory_hostname == "vm-1"
 
-    - name: Get join token for worker nodes
+    - name: Получить токен для присоединения рабочих узлов
       command: docker swarm join-token worker -q
       register: join_token
       when: inventory_hostname == "vm-1"
 
-    - name: Set join token fact
+    - name: Установить факт токена для всех узлов
       set_fact:
-        swarm_join_token: "{{ join_token.stdout }}"
+        join_token: "{{ join_token.stdout }}"
       when: inventory_hostname == "vm-1"
-    
-    - name: Check if join token is available
-      fail:
-        msg: "Join token is not available. Ensure that the swarm is initialized on vm-1."
-      when: inventory_hostname != "vm-1" and (join_token is not defined or join_token.stdout is not defined)
 
-    - name: Join Docker Swarm as worker
-      command: docker swarm join --token {{ swarm_join_token }} vm-1:2377
+    - name: Присоединиться к Docker Swarm как рабочий узел
+      command: docker swarm join --token {{ hostvars['vm-1'].join_token }} vm-1:2377
       when: inventory_hostname != "vm-1"
 
