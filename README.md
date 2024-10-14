@@ -30,6 +30,37 @@ docker node ls
 
 ## Решение Задача 1
 
+Настройки yandex cloud
+
+```bash
+curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
+```
+Получение  OAUTH-токена https://yandex.cloud/en/docs/iam/concepts/authorization/oauth-token
+
+```bash
+yc init
+yc config list
+```
+Создание service account
+
+yc iam service-account --folder-id <ID_каталога> list
+yc iam key create --service-account-name <account_name> --output key.json --folder-id <ID_каталога>
+
+
+```bash
+cat <<EOF >> ~/.terraformrc
+provider_installation {
+  network_mirror {
+    url = "https://terraform-mirror.yandexcloud.net/"
+    include = ["registry.terraform.io/*/*"]
+  }
+  direct {
+    exclude = ["registry.terraform.io/*/*"]
+  }
+}
+EOF
+```
+
 ```bash
  ansible-playbook -i inventory.yaml  docker_swarm_setup.yml
 ```
