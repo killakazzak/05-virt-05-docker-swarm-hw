@@ -53,7 +53,7 @@
     - name: Set join token fact for all nodes
       set_fact:
         join_token: "{{ join_token.stdout }}"
-      when: inventory_hostname != "vm-1"
+      when: inventory_hostname == "vm-1"
 
     - name: Join Docker Swarm as worker
       command: docker swarm join --token {{ join_token.stdout }} vm-1:2377
