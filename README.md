@@ -91,13 +91,14 @@ terraform apply
 ```
 Не удалось подключить worker-ноды с помощью ansible. Возникла ошибка
 
-
+![image](https://github.com/user-attachments/assets/af3d06e8-861e-41ca-95d3-0a9306732c73)
 
 Поэтому подключал ноды в ручном режиме...
 
 ```bash
 docker node ls
 ```
+![image](https://github.com/user-attachments/assets/abdc6451-e35e-4fcd-81a4-656cac50af12)
 
 
 ## Задача 2 (*) (необязательное задание *).
