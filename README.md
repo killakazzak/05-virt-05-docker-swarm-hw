@@ -44,8 +44,10 @@ yc config list
 Создание service account
 
 yc iam service-account --folder-id <ID_каталога> list
+
 yc iam key create --service-account-name <account_name> --output key.json --folder-id <ID_каталога>
 
+Настройка terraform
 
 ```bash
 cat <<EOF >> ~/.terraformrc
@@ -60,6 +62,28 @@ provider_installation {
 }
 EOF
 ```
+
+```bash
+cat <<EOF >> /root/05-virt-05-docker-swarm-hw/meta.txt
+users:
+  - name: tenda
+    groups: sudo
+    shell: /bin/bash
+    sudo: ['ALL=(ALL) NOPASSWD:ALL']
+EOF
+```
+```bash
+cat <<EOF >> /root/05-virt-05-docker-swarm-hw/ssh-keys.txt
+tenda:ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHB9X8NFfwcRKgcuSkzaqq1LCpplIhFsHNu54WnZhzAg tenda
+EOF
+```
+```bash
+terraform init
+terraform validate
+terraform plan
+terraform apply
+```
+
 
 ```bash
  ansible-playbook -i inventory.yaml  docker_swarm_setup.yml
