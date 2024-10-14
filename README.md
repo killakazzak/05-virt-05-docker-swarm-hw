@@ -84,9 +84,19 @@ terraform plan
 terraform apply
 ```
 
+Настройка ansible
 
 ```bash
  ansible-playbook -i inventory.yaml  docker_swarm_setup.yml
+```
+Не удалось подключить worker-ноды с помощью ansible. Возникла ошибка
+
+
+
+Поэтому подключал ноды в ручном режиме...
+
+```bash
+docker node ls
 ```
 
 
