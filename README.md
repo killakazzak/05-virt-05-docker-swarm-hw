@@ -28,7 +28,7 @@
 docker node ls
 ```
 
-
+## Решение Задача 1
 
 ```bash
  ansible-playbook -i inventory.yaml  docker_swarm_setup.yml
